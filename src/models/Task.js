@@ -12,6 +12,7 @@ const schema = new mongoose.Schema({
   postedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
   location: {
     type: String,
