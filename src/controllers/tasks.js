@@ -40,7 +40,26 @@ const addTask = async (req, res) => {
 };
 
 const updateTask = (req, res) => {};
-const deleteTask = (req, res) => {};
+
+const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  const taskId = mongoose.Types.ObjectId(id);
+
+  const task = await Task.findByIdAndDelete(taskId).exec();
+
+  if (!task) return res.status(404).json('task not found');
+
+  const user = await User.findByIdAndUpdate(
+    task.postedBy,
+    {
+      $pull: {
+        postedTasks: taskId
+      }
+    }
+  ).exec();
+
+  return res.status(200).json('task deleted');
+};
 
 module.exports = {
   getAllTasks,
