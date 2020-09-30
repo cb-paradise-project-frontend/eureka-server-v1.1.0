@@ -33,26 +33,34 @@ const schema = new mongoose.Schema({
     offeredBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     message: {
       type: String,
       required: true,
     },
-    timestamps: true,
     required: false,
-  }],
+  },
+  {
+    timestamps: true
+  }
+  ],
   comments: [{
     askedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     message: {
       type: String,
       required: true,
     },
-    timestamps: true,
     required: false,
-  }],
+  },
+  {
+    timestamps: true
+  }
+  ],
 });
 
 const Model = mongoose.model('Task', schema);
