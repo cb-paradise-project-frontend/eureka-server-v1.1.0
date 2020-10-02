@@ -7,6 +7,8 @@ const routes = require('./routes');
 const { connectToDB } = require('./utils/db');
 const errorHandler = require('./middlewares/errorHandler');
 
+const createTaskData = require('./utils/createTaskData');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -21,9 +23,12 @@ connectToDB()
     app.listen(PORT, () => {
       console.log(`Server is listen on PORT: ${PORT}`);
     });
+    // create task data for testing
+    // createTaskData(10);
   })
   .catch(e => {
     console.log('DB Connection Failed');
     console.error(e.message);
     process.exit(1);
   });
+
