@@ -12,7 +12,13 @@ const User = require('../models/User');
 // description,
 
 const getAllTasks = async (req, res) => {
-  const tasks = await Task.find().exec();
+  const { page = 1, pageSize = 2 } = req.query;
+
+  const limit = Math.max(pageSize * 1, 2);
+  const skip = (Math.max(page * 1, 1) - 1) * limit;
+
+  const tasks = await Task.find().limit(limit).skip(skip).exec();
+
   if (!tasks) {
     return res.status(400).json('Tasks not found');
   }
