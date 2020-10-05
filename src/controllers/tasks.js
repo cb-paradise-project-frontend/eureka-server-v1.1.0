@@ -12,12 +12,14 @@ const User = require('../models/User');
 // description,
 
 const getAllTasks = async (req, res) => {
-  const { page = 1, pageSize = 2 } = req.query;
+  const minPageSize = 1;
+  const { page = 1, pageSize = 1 } = req.query;
 
-  const limit = Math.max(pageSize * 1, 2);
+  const limit = Math.max(pageSize * 1, minPageSize);
   const skip = (Math.max(page * 1, 1) - 1) * limit;
+  const sort = { _id: 'asc' };
 
-  const tasks = await Task.find().limit(limit).skip(skip).exec();
+  const tasks = await Task.find().sort(sort).limit(limit).skip(skip).exec();
 
   if (!tasks) {
     return res.status(400).json('Tasks not found');
