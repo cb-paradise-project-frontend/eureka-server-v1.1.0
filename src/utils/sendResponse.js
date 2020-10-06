@@ -1,7 +1,19 @@
-module.exports = (res, code, message, data) => {
-  res.status(code).json({
-    status: code === 200 ? 'success' : 'error',
-    message,
+function sendResult(res, data) {
+  res.status(200).json({
+    status: 'success',
     data
   });
+}
+
+function sendError(res, code, message) {
+  res.status(code).json({
+    status: 'error',
+    message
+  });
+}
+
+
+module.exports = {
+  sendResult,
+  sendError,
 };
