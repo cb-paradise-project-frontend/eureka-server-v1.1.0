@@ -50,7 +50,7 @@ const addTask = async (req, res) => {
 
   await task.save();
 
-  sendResult(res, task);
+  return sendResult(res, task);
 };
 
 const updateTask = (req, res) => {};
@@ -61,9 +61,9 @@ const deleteTask = async (req, res) => {
 
   const task = await Task.findByIdAndDelete(taskId).exec();
 
-  if (!task) return res.status(404).json('task not found');
+  if (!task) throw new HttpError(404, 'Task not found.');
 
-  const user = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     task.postedBy,
     {
       $pull: {
@@ -72,7 +72,7 @@ const deleteTask = async (req, res) => {
     }
   ).exec();
 
-  return res.status(200).json('task deleted');
+  return sendResult(res, null, 204);
 };
 
 module.exports = {
