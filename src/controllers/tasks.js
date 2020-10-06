@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const Task = require('../models/Task');
 const User = require('../models/User');
+const HttpError = require('../utils/HttpError');
+const { sendResult } = require('../utils/sendResponse');
 
 // title,
 // status,
@@ -23,10 +25,9 @@ const getAllTasks = async (req, res) => {
 
   const tasks = await Task.find().sort(sort).limit(limit).skip(skip).exec();
 
-  if (!tasks) {
-    return res.status(400).json('Tasks not found');
-  }
-  return res.json(tasks);
+  if (!tasks.length) throw new HttpError(404, 'Tasks not found');
+
+  return sendResult(res, tasks);
 };
 
 const getTaskById = (req, res) => {};
@@ -36,8 +37,6 @@ const addTask = async (req, res) => {
     ...req.body 
   });
 
-  await task.save();
-
   const user = await User.findByIdAndUpdate(
     mongoose.Types.ObjectId(task.postedBy),
     {
@@ -45,9 +44,13 @@ const addTask = async (req, res) => {
         postedTasks: task._id
       }
     }
-  ).exec();
+    ).exec();
 
-  res.json(task);
+  if (!user) throw new HttpError(401, 'User not found.');
+
+  await task.save();
+
+  sendResult(res, task);
 };
 
 const updateTask = (req, res) => {};
