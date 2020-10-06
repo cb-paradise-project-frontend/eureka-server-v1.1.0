@@ -1,12 +1,18 @@
+const { sendError } = require('../utils/sendResponse');
+
 const errorHandler = (error, req, res, next) => {
-  const { title, _message } = error;
-  console.log(_message);
+  const { isHttpError, code, message } = error;
+  console.log(message);
 
   // if (error.name === 'ValidationError') {
   //   return res.json(error.details);
   // }
 
-  return res.json(_message);
+  if (!message) return sendResponse(res, 500, 'Unknown error.');
+
+  return isHttpError 
+    ? sendError(res, code, message)
+    : sendError(res, 500, message);
 }
 
 module.exports = errorHandler;
