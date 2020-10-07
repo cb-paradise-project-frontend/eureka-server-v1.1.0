@@ -14,6 +14,11 @@ const schema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  acceptedBy :{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false,
+  },
   location: {
     type: String,
     required: false,
