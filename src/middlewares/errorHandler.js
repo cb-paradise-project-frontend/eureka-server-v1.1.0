@@ -8,7 +8,7 @@ const errorHandler = (error, req, res, next) => {
   //   return res.json(error.details);
   // }
 
-  if (!message) return sendResponse(res, 500, 'Unknown error.');
+  if (!message) return sendError(res, 500, 'Unknown error.');
 
   return isHttpError 
     ? sendError(res, code, message)
