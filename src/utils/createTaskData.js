@@ -14,11 +14,20 @@ const testData = {
 };
 
 function createDataArray(size, data=testData) {
+  const dataArraySize = Math.max(size, 4);
+
   const dataArray = [];
-  for (let i = 0; i < size; i += 1) {
+
+  for (let i = 0; i < dataArraySize; i += 1) {
     const newData = { ...data };
     dataArray.push(newData);
   }
+
+  dataArray[1].title = 'Wall repair';
+  dataArray[1].status = 'ASSIGNED';
+  dataArray[2].status = 'COMPLETED';
+  dataArray[3].status = 'EXPIRED';
+
   return dataArray;
 }
 
