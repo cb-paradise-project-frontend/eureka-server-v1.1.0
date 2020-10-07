@@ -3,6 +3,7 @@ const Task = require('../models/Task');
 const User = require('../models/User');
 const HttpError = require('../utils/HttpError');
 const { sendResult } = require('../utils/sendResponse');
+const toObjectId = require('../utils/toObjectId');
 
 // title,
 // status,
@@ -33,7 +34,7 @@ const getAllTasks = async (req, res) => {
 const getTaskById = async (req, res) => {
   const { id } = req.params; 
 
-  const task = await Task.findById(mongoose.Types.ObjectId(id))
+  const task = await Task.findById(toObjectId(id))
     .populate('postedBy', '_id')
     .populate('offeredBy', '_id')
     .populate('askedBy', '_id')
@@ -53,7 +54,7 @@ const addTask = async (req, res) => {
   });
 
   const user = await User.findByIdAndUpdate(
-    mongoose.Types.ObjectId(task.postedBy),
+    toObjectId(task.postedBy),
     {
       $push: {
         postedTasks: task._id
@@ -71,10 +72,14 @@ const addTask = async (req, res) => {
 
 const updateTask = (req, res) => {};
 
+const addComment = async (req, res) => {
+  const { id } = req.params;
+  const taskId = toObjectId(id);
+};
 
 const deleteTask = async (req, res) => {
   const { id } = req.params;
-  const taskId = mongoose.Types.ObjectId(id);
+  const taskId = toObjectId(id);
 
   const task = await Task.findByIdAndDelete(taskId).exec();
 
