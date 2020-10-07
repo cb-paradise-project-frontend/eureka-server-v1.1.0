@@ -35,9 +35,9 @@ const getTaskById = async (req, res) => {
   const { id } = req.params; 
 
   const task = await Task.findById(toObjectId(id))
-    .populate('postedBy', '_id')
-    .populate('offeredBy', '_id')
-    .populate('askedBy', '_id')
+    .populate('postedBy', 'name')
+    .populate('offeredBy', 'name')
+    .populate('askedBy', 'name')
     .exec();
 
   console.log(task);
