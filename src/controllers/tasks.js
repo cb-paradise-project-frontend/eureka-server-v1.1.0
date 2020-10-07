@@ -74,7 +74,26 @@ const updateTask = (req, res) => {};
 
 const addComment = async (req, res) => {
   const { id } = req.params;
-  const taskId = toObjectId(id);
+  const { comment } = req.body;
+
+  console.log(comment);
+
+  const task = await Task
+    .findByIdAndUpdate(toObjectId(id),
+      {
+        $push: {
+          comments: comment
+        }
+      },
+      {
+        new: true
+      }
+    )
+    .exec();
+
+  if (!task) throw new HttpError(404, 'Task not found.');
+
+  return sendResult(res, task);
 };
 
 const deleteTask = async (req, res) => {
@@ -103,5 +122,6 @@ module.exports = {
   getTaskById,
   addTask,
   updateTask,
+  addComment,
   deleteTask,
 }
