@@ -16,11 +16,11 @@ const getAllTasks = async (req, res) => {
   const MIN_PAGE_SIZE = 1;
   const DEFAULT_PAGE = 1;
 
-  const { page = DEFAULT_PAGE, pageSize = MIN_PAGE_SIZE } = req.query;
+  const { page = DEFAULT_PAGE, pageSize = 20 } = req.query;
 
   const limit = Math.max(pageSize, MIN_PAGE_SIZE);
   const skip = (Math.max(page, DEFAULT_PAGE) - 1) * limit;
-  const sort = { _id: 'desc' };
+  const sort = { _id: 'asc' };
 
   const tasks = await Task.find().sort(sort).limit(limit).skip(skip).exec();
 
