@@ -68,7 +68,10 @@ const schema = new mongoose.Schema({
   }]
 },
 {
-  timestamps: true
+  toJSON: {
+    virtuals: true
+  },
+  timestamps: true,
 });
 
 const Model = mongoose.model('Task', schema);
