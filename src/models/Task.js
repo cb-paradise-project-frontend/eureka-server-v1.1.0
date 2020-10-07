@@ -74,6 +74,10 @@ const schema = new mongoose.Schema({
   timestamps: true,
 });
 
+schema
+  .virtual('due')
+  .get(function() { return this.dueDate; });
+
 const Model = mongoose.model('Task', schema);
 
 module.exports = Model;
