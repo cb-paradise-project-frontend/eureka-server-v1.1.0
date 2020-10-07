@@ -76,8 +76,6 @@ const addComment = async (req, res) => {
   const { id } = req.params;
   const { comment } = req.body;
 
-  console.log(comment);
-
   const task = await Task
     .findByIdAndUpdate(toObjectId(id),
       {
