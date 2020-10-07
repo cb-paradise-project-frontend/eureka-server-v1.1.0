@@ -1,15 +1,17 @@
-function sendResult(res, data, code = 200) {
+function sendResponse(res, code, message, data) {
   res.status(code).json({
-    status: 'success',
+    status: code === 200 ? 'success' : 'error',
+    message,
     data
   });
 }
 
+function sendResult(res, data, code = 200) {
+  sendResponse(res, code, undefined, data);
+}
+
 function sendError(res, code, message) {
-  res.status(code).json({
-    status: 'error',
-    message
-  });
+  sendResponse(res, code, message);
 }
 
 
