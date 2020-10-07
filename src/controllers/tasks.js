@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const Task = require('../models/Task');
 const User = require('../models/User');
 const HttpError = require('../utils/HttpError');
@@ -30,7 +29,23 @@ const getAllTasks = async (req, res) => {
   return sendResult(res, tasks);
 };
 
-const getTaskById = (req, res) => {};
+
+const getTaskById = async (req, res) => {
+  const { id } = req.params; 
+
+  const task = await Task.findById(mongoose.Types.ObjectId(id))
+    .populate('postedBy', '_id')
+    .populate('offeredBy', '_id')
+    .populate('askedBy', '_id')
+    .exec();
+
+  console.log(task);
+
+  if (!task) throw new HttpError(404, 'Task not found.');
+
+  return sendResult(res, task);
+};
+
 
 const addTask = async (req, res) => {
   const task = new Task({
@@ -53,7 +68,9 @@ const addTask = async (req, res) => {
   return sendResult(res, task);
 };
 
+
 const updateTask = (req, res) => {};
+
 
 const deleteTask = async (req, res) => {
   const { id } = req.params;
@@ -74,6 +91,7 @@ const deleteTask = async (req, res) => {
 
   return sendResult(res, null, 204);
 };
+
 
 module.exports = {
   getAllTasks,
