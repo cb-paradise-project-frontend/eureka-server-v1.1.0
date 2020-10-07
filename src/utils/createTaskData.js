@@ -8,9 +8,9 @@ const testData = {
   location: 'Kurunjang VIC 3337, Australia',
   dueDate: "Wed Sep 30 2020 21:34:17 GMT+1000 (Australian Eastern Standard Time)",
   description: `-remove existing bamboo fence - supply and install new fence (open for ideas)
-            - install synthetic turf
-            - landscaping design and install
-            - remove and upgrade existing waterfall feature into the pool`,
+  - install synthetic turf
+  - landscaping design and install
+  - remove and upgrade existing waterfall feature into the pool`,
 };
 
 function createDataArray(size, data=testData) {
