@@ -14,9 +14,14 @@ const schema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  acceptedBy :{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false,
+  },
   location: {
     type: String,
-    required: true,
+    required: false,
   },
   dueDate: {
     type: Date,
@@ -60,9 +65,18 @@ const schema = new mongoose.Schema({
   },
   {
     timestamps: true
-  }
-  ],
+  }]
+},
+{
+  toJSON: {
+    virtuals: true
+  },
+  timestamps: true,
 });
+
+schema
+  .virtual('due')
+  .get(function() { return this.dueDate; });
 
 const Model = mongoose.model('Task', schema);
 
