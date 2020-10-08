@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const authSchema = Joi.object({
+  name: Joi.string(),
   email: Joi.string()
             .email()
             .lowercase()
