@@ -32,14 +32,14 @@ const addUser = async (req, res) => {
     stripUnknown: true,
   });
 
-  const{email, password} = result;
+  const{ name, email, password } = result;
 
   const existingUser = await User.findOne({email}).exec();
   if (existingUser) {
     return res.json('User exists, please try another email');
   }
 
-  const user = new User({ email, password });
+  const user = new User({ name, email, password });
   user.password = await encryptPassword(password);
   await user.save();
 

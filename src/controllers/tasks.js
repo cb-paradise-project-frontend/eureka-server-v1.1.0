@@ -23,7 +23,27 @@ const getAllTasks = async (req, res) => {
   const skip = (Math.max(page, DEFAULT_PAGE) - 1) * limit;
   const sort = { _id: 'asc' };
 
-  const tasks = await Task.find().sort(sort).limit(limit).skip(skip).exec();
+  const tasks = await Task
+    .find()
+    .sort(sort)
+    .limit(limit)
+    .skip(skip)
+    .populate('postedBy', 'name')
+    .populate({ 
+      path: 'offers',
+      populate: {
+        path: "offeredBy",
+        select: 'name'
+      }
+    })
+    .populate({ 
+      path: 'comments',
+      populate: {
+        path: "askedBy",
+        select: 'name'
+      }
+    })
+    .exec();
 
   if (!tasks.length) throw new HttpError(404, 'Tasks not found');
 
@@ -35,12 +55,22 @@ const getTaskById = async (req, res) => {
   const { id } = req.params; 
 
   const task = await Task.findById(toObjectId(id))
-    .populate('postedBy', 'name')
-    .populate('offeredBy', 'name')
-    .populate('askedBy', 'name')
+    .populate('postedBy')
+    .populate({ 
+      path: 'offers',
+      populate: {
+        path: "offeredBy",
+        select: 'name'
+      }
+    })
+    .populate({ 
+      path: 'comments',
+      populate: {
+        path: "askedBy",
+        select: 'name'
+      }
+    })
     .exec();
-
-  console.log(task);
 
   if (!task) throw new HttpError(404, 'Task not found.');
 
