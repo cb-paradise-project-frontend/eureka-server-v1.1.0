@@ -17,14 +17,24 @@ const getAllTasks = async (req, res) => {
   const MIN_PAGE_SIZE = 1;
   const DEFAULT_PAGE = 1;
 
-  const { page = DEFAULT_PAGE, pageSize = 20 } = req.query;
+  const { page = DEFAULT_PAGE, pageSize = 20, keyword } = req.query;
+
+  const filter = keyword &&
+    { $or: [
+      { 
+        title: { $regex: keyword, $options: '$i' } 
+      },
+      {
+        description: { $regex: keyword, $options: '$i' }
+      },
+    ]};
 
   const limit = Math.max(pageSize, MIN_PAGE_SIZE);
   const skip = (Math.max(page, DEFAULT_PAGE) - 1) * limit;
   const sort = { _id: 'asc' };
 
   const tasks = await Task
-    .find()
+    .find(filter)
     .sort(sort)
     .limit(limit)
     .skip(skip)
