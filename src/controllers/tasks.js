@@ -17,7 +17,13 @@ const getAllTasks = async (req, res) => {
   const MIN_PAGE_SIZE = 1;
   const DEFAULT_PAGE = 1;
 
-  const { page = DEFAULT_PAGE, pageSize = 20, keyword } = req.query;
+  const { 
+    page = DEFAULT_PAGE, 
+    pageSize = 20, 
+    keyword, 
+    maxPrice = 9999,
+    minPrice = 5,
+  } = req.query;
 
   const filter = keyword &&
     { $or: [
@@ -36,6 +42,9 @@ const getAllTasks = async (req, res) => {
   const tasks = await Task
     .find(filter)
     .sort(sort)
+    .where('budget')
+    .gte(minPrice)
+    .lte(maxPrice)
     .limit(limit)
     .skip(skip)
     .populate('postedBy', 'name')
