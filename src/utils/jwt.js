@@ -9,7 +9,7 @@ const signJWT = async (userId) => {
     }
   }
   try {
-    const token = await jwt.sign(payload, jwtSecret, {expiresIn: 3600});
+    const token = await jwt.sign(payload, jwtSecret, {expiresIn: '24h'});
     return token;
   } catch (error) {
     throw error;
