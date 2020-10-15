@@ -3,24 +3,8 @@ const { sendResult } = require('../utils/sendResponse');
 const Profile = require('./../models/Profile');
 
 const addProfile = async (req, res) => {
-  const {
-    user,
-    accountHolder,
-    accountNumber,
-    bsb,
-    billingAddress,
-    birthday,
-    mobile,
-  } = req.body;
-
   const profile = new Profile({
-    user,
-    accountHolder,
-    accountNumber,
-    bsb,
-    billingAddress,
-    birthday,
-    mobile,
+    ...req.body
   });
 
   if (!profile) throw new HttpError(400, 'Invalid profile input');
