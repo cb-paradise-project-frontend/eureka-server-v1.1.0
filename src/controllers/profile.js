@@ -26,7 +26,7 @@ const addProfile = async (req, res) => {
 
 
 // for testing
-const getAllProfile = async () => {
+const getAllProfile = async (req, res) => {
   const profiles = await Profile.find().exec();
 
   if (!profiles.length) throw new HttpError(404, 'Profiles not found');
