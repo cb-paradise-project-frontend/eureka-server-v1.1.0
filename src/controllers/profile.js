@@ -4,11 +4,11 @@ const { sendResult } = require('../utils/sendResponse');
 const Profile = require('./../models/Profile');
 
 const addProfile = async (req, res) => {
-  const { user } = req.body;
+  const userId = req.body.user;
 
-  const matchUser = await User.findById(user).exec();
+  const user = await User.findById(userId).exec();
 
-  if (matchUser.profile) throw new HttpError(403, 'Profile already exist');
+  if (user.profile) throw new HttpError(403, 'Profile already exist');
 
   const profile = new Profile({
     ...req.body
@@ -16,13 +16,17 @@ const addProfile = async (req, res) => {
 
   if (!profile) throw new HttpError(400, 'Invalid profile input');
 
-  matchUser.profile = profile._id;
+  user.profile = profile._id;
 
   await profile.save();
-  await matchUser.save();
+  await user.save();
 
   return sendResult(res, profile);
 };
+
+// const getProfileByUserId = () => {
+//   const user
+// }
 
 
 // for testing
