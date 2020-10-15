@@ -20,7 +20,12 @@ const schema = new mongoose.Schema({
   joinedTasks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
-  }]
+  }],
+  profile:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Profile',
+    required: false,
+  }
 });
 
 const Model = mongoose.model('User', schema);
