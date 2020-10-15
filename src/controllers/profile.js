@@ -24,9 +24,15 @@ const addProfile = async (req, res) => {
   return sendResult(res, profile);
 };
 
-// const getProfileByUserId = () => {
-//   const user
-// }
+const getProfileByUserId = async (req, res) => {
+  const { id } = req.params;
+
+  const profile = await Profile.find({ user: id }).exec();
+
+  if (!profile) throw new HttpError(404, 'Profile not found');
+
+  return sendResult(res, profile);
+};
 
 
 // for testing
@@ -41,4 +47,5 @@ const getAllProfile = async (req, res) => {
 module.exports = {
   addProfile,
   getAllProfile,
+  getProfileByUserId,
 };
