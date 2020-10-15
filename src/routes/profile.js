@@ -1,7 +1,7 @@
 const express = require('express');
 
 const {
-  addProfile,
+  saveProfile,
   getAllProfile,
   getProfileByUserId,
 } = require('./../controllers/profile');
@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.get('/', getAllProfile);
 router.get('/:id', getProfileByUserId);
-router.post('/', addProfile);
+router.put('/', saveProfile);
 
 module.exports = router;

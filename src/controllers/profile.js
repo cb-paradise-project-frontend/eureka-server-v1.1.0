@@ -3,12 +3,8 @@ const User = require('../models/User');
 const { sendResult } = require('../utils/sendResponse');
 const Profile = require('./../models/Profile');
 
-const addProfile = async (req, res) => {
+const saveProfile = async (req, res) => {
   const userId = req.body.user;
-
-  // const user = await User.findById(userId).exec();
-
-  // if (!user) throw new HttpError(404, 'User not found');
 
   const profile = new Profile({
     ...req.body
@@ -53,7 +49,7 @@ const getAllProfile = async (req, res) => {
 };
 
 module.exports = {
-  addProfile,
+  saveProfile,
   getAllProfile,
   getProfileByUserId,
 };
