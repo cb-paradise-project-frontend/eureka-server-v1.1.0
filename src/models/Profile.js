@@ -24,7 +24,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      lineTWO: {
+      lineTwo: {
         type: String,
         required: false,
       },
