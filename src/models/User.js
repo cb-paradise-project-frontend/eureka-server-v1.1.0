@@ -21,6 +21,10 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
   }],
+  offeredTasks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Task',
+  }],
   joinedTasks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
