@@ -1,17 +1,10 @@
 const mongoose = require('mongoose');
+const { findByIdAndUpdate } = require('../models/Task');
 const Task = require('../models/Task');
 const User = require('../models/User');
 const HttpError = require('../utils/HttpError');
 const { sendResult } = require('../utils/sendResponse');
 const toObjectId = require('../utils/toObjectId');
-
-// title,
-// status,
-// postedBy,
-// location,
-// dueDate,
-// budget,
-// description,
 
 const getAllTasks = async (req, res) => {
   const MIN_PAGE_SIZE = 1;
@@ -143,6 +136,37 @@ const addComment = async (req, res) => {
   return sendResult(res, task);
 };
 
+const makeOffer = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+
+  const task = await Task.findById(id).exec();
+
+  if (!task) throw new HttpError(404, 'Task not found');
+
+  if (userId === task.postedBy) {
+    throw new HttpError(403, 'Cannot make offer to your tasks.')
+  };
+
+  const newOffer = {
+    offeredBy: toObjectId(userId),
+  };
+
+  task.offers.push(newOffer);
+
+  await task.save();
+
+  await User
+    .findByIdAndUpdate(userId, {
+      $push: {
+        offeredTasks: id
+      }
+    })
+    .exec();
+
+  return sendResult(res, task);
+}
+
 const deleteTask = async (req, res) => {
   const { id } = req.params;
   const taskId = toObjectId(id);
@@ -170,5 +194,6 @@ module.exports = {
   addTask,
   updateTask,
   addComment,
+  makeOffer,
   deleteTask,
 }

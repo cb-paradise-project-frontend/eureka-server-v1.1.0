@@ -6,6 +6,7 @@ const {
   addTask,
   updateTask,
   addComment,
+  makeOffer,
   deleteTask
 } = require('./../controllers/tasks');
 
@@ -16,6 +17,7 @@ router.get('/:id', getTaskById);
 router.post('/', addTask);
 router.put('/:id', updateTask);
 router.put('/comment/:id', addComment);
+router.put('/offer/:id', makeOffer);
 router.delete('/:id', deleteTask);
 
 module.exports = router;
