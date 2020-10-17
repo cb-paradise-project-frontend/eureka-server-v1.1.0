@@ -45,12 +45,12 @@ const schema = new mongoose.Schema({
   },
   dueDate: {
     type: Date,
-    validate: {
-      validator: (dueDate) => {
-        return !Joi.date().min(Date.now()).max(Date.now()+(1000 * 60 * 60 * 24 * 30)).validate(dueDate).error
-      },
-      msg: "DueDate start from today and not greater than 30 days"
-    },
+    // validate: {
+    //   validator: (dueDate) => {
+    //     return !Joi.date().min(Date.now()).max(Date.now()+(1000 * 60 * 60 * 24 * 30)).validate(dueDate).error
+    //   },
+    //   msg: "DueDate start from today and not greater than 30 days"
+    // },
     required: true,
   },
   budget: {
@@ -84,7 +84,7 @@ const schema = new mongoose.Schema({
     },
     message: {
       type: String,
-      required: true,
+      required: false,
     },
     required: false,
   },
