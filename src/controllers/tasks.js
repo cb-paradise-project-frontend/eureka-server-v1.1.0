@@ -52,14 +52,14 @@ const getAllTasks = async (req, res) => {
       path: 'offers',
       populate: {
         path: "offeredBy",
-        select: 'name'
+        select: 'name _id'
       }
     })
     .populate({ 
       path: 'comments',
       populate: {
         path: "askedBy",
-        select: 'name'
+        select: 'name _id'
       }
     })
     .exec();
@@ -79,14 +79,14 @@ const getTaskById = async (req, res) => {
       path: 'offers',
       populate: {
         path: "offeredBy",
-        select: 'name'
+        select: 'name _id'
       }
     })
     .populate({ 
       path: 'comments',
       populate: {
         path: "askedBy",
-        select: 'name'
+        select: 'name _id'
       }
     })
     .exec();
