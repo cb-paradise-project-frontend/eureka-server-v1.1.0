@@ -32,13 +32,13 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: false,
-  }, //TODO: 验证
+  }, 
   location: {
     type: String,
     validate: {
       validator: (location) => {
         return !Joi.string().validate(location).error || !Joi.string().lowercase().valid(...['online']).validate(location).error
-      }, //TODO: google api
+      }, //TODO: google api 
       msg: "Invalid address"
     },
     required: true,
