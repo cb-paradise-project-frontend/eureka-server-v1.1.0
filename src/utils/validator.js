@@ -1,7 +1,10 @@
 const Joi = require('joi');
 
-const authSchema = Joi.object({
-  name: Joi.string(),
+const signUpSchema = Joi.object({
+  firstName: Joi.string()
+            .required(),
+  lastName: Joi.string()
+            .required(),
   email: Joi.string()
             .email()
             .lowercase()
@@ -11,10 +14,13 @@ const authSchema = Joi.object({
             .required(),
 });
 
-const passwordSchema = Joi.object({
+const logInSchema = Joi.object({
+  email: Joi.string()
+            .email()
+            .lowercase()
+            .required(),
   password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
             .required(),
 });
 
-module.exports = { authSchema, passwordSchema }
+module.exports = { signUpSchema, logInSchema }

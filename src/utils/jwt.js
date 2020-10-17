@@ -2,11 +2,9 @@ const jwt = require('jsonwebtoken');
 
 const jwtSecret = process.env.JWT_SECRET;
 
-const signJWT = async (userId) => {
+const signJWT = async (user) => {
   const payload = {
-    user: {
-      id: userId,
-    }
+    user,
   }
   try {
     const token = await jwt.sign(payload, jwtSecret, {expiresIn: '24h'});

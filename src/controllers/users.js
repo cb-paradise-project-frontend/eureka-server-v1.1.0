@@ -1,7 +1,7 @@
 const User = require('./../models/User');
 const { encryptPassword, comparePassword } = require('../utils/password');
 const { signJWT } = require('../utils/jwt');
-const { authSchema, passwordSchema } = require('../utils/validator');
+const { signUpSchema, logInSchema } = require('../utils/validator');
 
 
 const getUsers = async (req, res) => {
@@ -26,25 +26,25 @@ const getUserById = async (req, res) => {
 // Public
 
 const addUser = async (req, res) => {
-  const result = await authSchema.validateAsync(req.body, {
+  const result = await signUpSchema.validateAsync(req.body, {
     abortEarly: false,
     allowUnknown: true,
     stripUnknown: true,
   });
 
-  const{ name, email, password } = result;
+  const { firstName, lastName, email, password } = result;
 
   const existingUser = await User.findOne({email}).exec();
   if (existingUser) {
     return res.json('User exists, please try another email');
   }
 
-  const user = new User({ name, email, password });
+  const user = new User({ firstName, lastName, email, password });
   user.password = await encryptPassword(password);
   await user.save();
 
   const userId = user.id;
-  const token = await signJWT(userId);
+  const token = await signJWT({ userId, firstName, lastName, email });
   return res.set('X-Auth-Token', token).status(200).json({message: 'SignUp Succeed'})
 };
 
@@ -53,8 +53,13 @@ const addUser = async (req, res) => {
 // Public
 
 const authenticateUser = async(req, res) => {
-  const { email, password } = req.body;
+  const result = await logInSchema.validateAsync(req.body, {
+    abortEarly: false,
+    allowUnknown: true,
+    stripUnknown: true,
+  });
 
+  const { email, password } = result;
   const user = await User.findOne({email}).exec();
   if (!user) {
     return res.json('Incorrect email or password');
@@ -67,8 +72,9 @@ const authenticateUser = async(req, res) => {
   }
 
   const userId = user.id;
-  const token = await signJWT(userId);
-  return res.header('X-Auth-Token', token).json({message: 'Response Succeed'})
+  const { firstName, lastName } = user;
+  const token = await signJWT({ userId, firstName, lastName, email });
+  return res.header('X-Auth-Token', token).json({message: 'LogIn Succeed'})
 };
 
 
