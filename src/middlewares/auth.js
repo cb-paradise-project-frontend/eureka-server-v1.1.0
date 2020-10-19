@@ -1,15 +1,18 @@
 require('express-async-errors');
-const { verifyJWT } = require('./../utils/jwt');
+const { signJWT, verifyJWT } = require('./../utils/jwt');
 
 const auth = async ( req, res, next ) => {
-  const token = req.header('x-auth-token');
+  const token = req.header('X-Auth-Token');
+
   if (!token) {
     return res.json('No tohen, authorization denied');
   }
+
   try {
     const decoded = await verifyJWT(token);
     req.user = decoded.user;
-    console.log(req.user, decoded.user);
+    const tokenToSend = (await signJWT(decoded.user)).toString();
+    res.setHeader('X-Auth-Token', tokenToSend);
     next();
     return;
   } catch (error) {
