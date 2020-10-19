@@ -23,4 +23,17 @@ const logInSchema = Joi.object({
             .required(),
 });
 
-module.exports = { signUpSchema, logInSchema }
+const verifyUserSchema = Joi.object({
+  userId: Joi.string()
+             .required(),
+  firstName: Joi.string()
+               .required(),
+  lastName: Joi.string()
+               .required(),
+  email: Joi.string()
+            .email()
+            .lowercase()
+            .required(),
+})
+
+module.exports = { signUpSchema, logInSchema, verifyUserSchema }
