@@ -91,12 +91,20 @@ const getTaskById = async (req, res) => {
 
 
 const addTask = async (req, res) => {
+
+  const { userId } = req.user;
+  console.log(userId);
   const task = new Task({
-    ...req.body 
+    ...req.body,
+    postedBy: userId
   });
 
+  // const findUser = await User.findById({userID});
+  // if(!findUser) {
+  //   throw new HttpError(401, 'User not found.')
+  // }
   const user = await User.findByIdAndUpdate(
-    toObjectId(task.postedBy),
+    userId,
     {
       $push: {
         postedTasks: task._id

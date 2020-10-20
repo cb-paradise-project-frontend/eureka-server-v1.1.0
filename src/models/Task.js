@@ -5,22 +5,22 @@ const schema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    validate: {
-      validator: (title) => 
-      {
-        return !Joi.string().min(10).max(50).validate(title).error
-      },
-        msg: "Please enter at least 10 characters and a maximum of 50"
-    }
+    // validate: {
+    //   validator: (title) => 
+    //   {
+    //     return !Joi.string().min(10).max(50).validate(title).error
+    //   },
+    //     msg: "Please enter at least 10 characters and a maximum of 50"
+    // }
   },
   status: {
     type: String, //Open, assigned, expired, completed
-    validate: {
-      validator: (status) => {
-        return !Joi.string().uppercase().valid(...['OPEN', 'ASSIGNED', 'EXPIRED', 'COMPLETED']).validate(status).error
-      },
-      msg: "Invalid task status"
-    },
+    // validate: {
+    //   validator: (status) => {
+    //     return !Joi.string().uppercase().valid(...['OPEN', 'ASSIGNED', 'EXPIRED', 'COMPLETED']).validate(status).error
+    //   },
+    //   msg: "Invalid task status"
+    // },
     required: true,
   },
   postedBy: {
@@ -35,12 +35,12 @@ const schema = new mongoose.Schema({
   }, 
   location: {
     type: String,
-    validate: {
-      validator: (location) => {
-        return !Joi.string().validate(location).error || !Joi.string().lowercase().valid(...['online']).validate(location).error
-      }, //TODO: google api 
-      msg: "Invalid address"
-    },
+    // validate: {
+    //   validator: (location) => {
+    //     return !Joi.string().validate(location).error || !Joi.string().lowercase().valid(...['online']).validate(location).error
+    //   }, //TODO: google api 
+    //   msg: "Invalid address"
+    // },
     required: true,
   },
   dueDate: {
@@ -55,24 +55,24 @@ const schema = new mongoose.Schema({
   },
   budget: {
     type: Number,
-    validate: {
-      validator: (budget) => 
-      {
-        return !Joi.number().min(5).max(9999).validate(budget).error
-      },
-        msg: "Please suggest a budget between $ 5 and 9999 for your task"
-    },
+    // validate: {
+    //   validator: (budget) => 
+    //   {
+    //     return !Joi.number().min(5).max(9999).validate(budget).error
+    //   },
+    //     msg: "Please suggest a budget between $ 5 and 9999 for your task"
+    // },
     required: true,
   },
   description: {
     type: String,
-    validate: {
-      validator: (desc) => 
-      {
-        return !Joi.string().min(25).max(1000).validate(desc).error
-      },
-        msg: "Please enter at least 25 characters and a maximum of 1000"
-    },
+    // validate: {
+    //   validator: (desc) => 
+    //   {
+    //     return !Joi.string().min(25).max(1000).validate(desc).error
+    //   },
+    //     msg: "Please enter at least 25 characters and a maximum of 1000"
+    // },
     required: true,
   },
   //TODO: user table validate(userID)
