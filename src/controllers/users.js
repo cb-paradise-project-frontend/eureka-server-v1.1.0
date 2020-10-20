@@ -1,7 +1,7 @@
 const User = require('./../models/User');
 const { encryptPassword, comparePassword } = require('../utils/password');
 const { signJWT } = require('../utils/jwt');
-const { signUpSchema, logInSchema, verifyUserSchema } = require('../utils/validator');
+const { signUpSchema, logInSchema } = require('../utils/validator');
 
 
 const getUsers = async (req, res) => {
@@ -77,42 +77,16 @@ const logIn = async(req, res) => {
   return res.header('X-Auth-Token', token).json({message: 'LogIn Succeed'})
 };
 
-// Verify User
-// Private
-
-const verifyUser = async (req, res) => {
-  console.log(req.headers);
-  const userInfo = req.headers['x-auth-token'];
-  if (!userInfo) {
-    return res.json('No token');
-  }
-
-  const result = await verifyUserSchema.validateAsync(userInfo, {
-    abortEarly: false,
-    allowUnknown: true,
-    stripUnknown: true,
-  });
-
-  const id = result.userId;
-  const user = await User.findOne({id}).exec();
-  if (!user) {
-    return res.json('Invalid token');
-  }
-
-  const { id: userId, firstName, lastName, email } = user;
-  const token = await signJWT({ userId, firstName, lastName, email });
-  return res.header('X-Auth-Token', token).json({message: 'Verified User'})
-};
-
 // User private route demo
 // Private
+// 以下代码为写auth middleware时的demo，可修改或废弃
 
 const updateUser = async (req, res) => {
   const id = req.params.id;
 
   const { email, password } = req.body;
 
-  if (req.user.id.toString() !== id.toString()) {
+  if (req.user.userId.toString() !== id.toString()) {
     return res.json('You are not authorized');
   }
 
@@ -128,4 +102,4 @@ const updateUser = async (req, res) => {
   return res.json(updatedUser);
 };
 
-module.exports = { getUsers, getUserById, signUp, logIn, verifyUser, updateUser };
+module.exports = { getUsers, getUserById, signUp, logIn, updateUser };
