@@ -5,13 +5,13 @@ const auth = async ( req, res, next ) => {
   const token = req.header('X-Auth-Token');
 
   if (!token) {
-    return res.status(401).json('No tohen, authorization denied');
+    return res.status(401).json('No token, authorization denied');
   }
 
   try {
     const decoded = await verifyJWT(token);
-    req.user = decoded.user; //为什么不放在req.body
-    console.log(req.user, decoded.user);
+    req.user = decoded.user;
+    // console.log(req.user, decoded.user);
     next();
     return;
   } catch (error) {

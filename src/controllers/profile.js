@@ -32,8 +32,6 @@ const saveProfile = async (req, res) => {
 const getProfileByUserId = async (req, res) => {
   const { userId } = req.user;
 
-  console.log(userId);
-
   const profile = await Profile.find({ user: userId }).exec();
 
   if (!profile) throw new HttpError(404, 'Profile not found');
