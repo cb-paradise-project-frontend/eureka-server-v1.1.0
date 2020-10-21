@@ -105,15 +105,20 @@ const updateUser = async (req, res) => {
 
 const updateUserName = async (req, res) => {
   const { firstName, lastName, userId } = req.body;
-
-  const user = await User.findById(userId).exec();
+  let user = await User.findById(userId).exec();
 
   if (!user) {
     throw new HttpError(400, 'user not found');
   }
 
-  user = { ...user, firstName, lastName };
+  Object.assign(user, {
+    firstName,
+    lastName,
+  }, {new: true})
+
   const updatedUserName = await user.save();
+
+  console.log(123, updatedUserName);
 
   if (!updatedUserName) {
     throw new HttpError('406', 'update user name faild');
@@ -121,7 +126,10 @@ const updateUserName = async (req, res) => {
   const { email } = user;
 
   const token =  await signJWT({ userId, firstName, lastName, email });
-  return res.status(204).header('X-Auth-Token', token).json(updateUserName);
+  return res.status(202).header('X-Auth-Token', token).json({
+    firstname: updatedUserName.firstName,
+    lastName: updatedUserName.lastName,
+  });
 }
 
 module.exports = { 
