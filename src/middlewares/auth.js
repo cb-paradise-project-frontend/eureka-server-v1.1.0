@@ -11,8 +11,9 @@ const auth = async ( req, res, next ) => {
   try {
     const decoded = await verifyJWT(token);
     req.user = decoded.user;
+    const tokenToSend = (await signJWT(decoded.user)).toString();
+    res.setHeader('X-Auth-Token', tokenToSend);
     next();
-    return;
   } catch (error) {
     if (error.message == 'invalid token') {
       return res.status(403).json('You are not authorized');
