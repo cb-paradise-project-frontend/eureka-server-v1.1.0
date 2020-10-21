@@ -141,10 +141,10 @@ const addComment = async (req, res) => {
 };
 
 const makeOffer = async (req, res) => {
-  const { id } = req.params;
-  const { userId } = req.body;
+  const { id: taskId } = req.params;
+  const { userId } = req.user;
 
-  const task = await Task.findById(id).exec();
+  const task = await Task.findById(taskId).exec();
 
   if (!task) throw new HttpError(404, 'Task not found');
 
@@ -163,7 +163,7 @@ const makeOffer = async (req, res) => {
   await User
     .findByIdAndUpdate(userId, {
       $push: {
-        offeredTasks: id
+        offeredTasks: taskId
       }
     })
     .exec();
