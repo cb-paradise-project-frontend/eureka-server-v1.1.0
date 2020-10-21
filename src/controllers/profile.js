@@ -4,10 +4,11 @@ const { sendResult } = require('../utils/sendResponse');
 const Profile = require('./../models/Profile');
 
 const saveProfile = async (req, res) => {
-  const userId = req.body.user;
+  const { userId } = req.user;
 
   const profile = new Profile({
-    ...req.body
+    ...req.body,
+    user: userId,
   });
 
   if (!profile) throw new HttpError(400, 'Invalid profile input');
