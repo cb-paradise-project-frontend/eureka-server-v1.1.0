@@ -9,8 +9,8 @@ const {
 
 const router = express.Router();
 
-router.get('/', getAllProfile);
-router.get('/:id', getProfileByUserId);
+router.get('/all', getAllProfile);
+router.get('/', auth, getProfileByUserId);
 
 router.put('/', auth, saveProfile);
 
