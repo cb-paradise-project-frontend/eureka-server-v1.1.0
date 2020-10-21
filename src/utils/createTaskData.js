@@ -6,7 +6,7 @@ const testData = {
   title: 'Roof repair',
   status: 'OPEN',
   budget: '120',
-  postedBy: "5f890774ec41f921b82816ab",
+  postedBy: "5f8cfb86e184c46a6c021d82",
   location: 'Kurunjang VIC 3337, Australia',
   dueDate: "Wed Sep 30 2020 21:34:17 GMT+1000 (Australian Eastern Standard Time)",
   description: `-remove existing bamboo fence - supply and install new fence (open for ideas)

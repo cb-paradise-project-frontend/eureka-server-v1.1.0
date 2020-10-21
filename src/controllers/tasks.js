@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-const { findByIdAndUpdate } = require('../models/Task');
 const Task = require('../models/Task');
 const User = require('../models/User');
 const HttpError = require('../utils/HttpError');
@@ -91,18 +89,13 @@ const getTaskById = async (req, res) => {
 
 
 const addTask = async (req, res) => {
-
   const { userId } = req.user;
-  console.log(userId);
+
   const task = new Task({
     ...req.body,
     postedBy: userId
   });
 
-  // const findUser = await User.findById({userID});
-  // if(!findUser) {
-  //   throw new HttpError(401, 'User not found.')
-  // }
   const user = await User.findByIdAndUpdate(
     userId,
     {
@@ -123,18 +116,21 @@ const addTask = async (req, res) => {
 const updateTask = (req, res) => {};
 
 const addComment = async (req, res) => {
-  const { id } = req.params;
-  const comment = { ...req.body };
+  const { id: taskId } = req.params;
+  const { userId } = req.user;
+
+  const comment = {
+    ...req.body,
+    askedBy: userId,
+  };
 
   const task = await Task
-    .findByIdAndUpdate(toObjectId(id),
+    .findByIdAndUpdate(
+      taskId,
       {
         $push: {
           comments: comment
         }
-      },
-      {
-        new: true
       }
     )
     .exec();
@@ -145,10 +141,10 @@ const addComment = async (req, res) => {
 };
 
 const makeOffer = async (req, res) => {
-  const { id } = req.params;
-  const { userId } = req.body;
+  const { id: taskId } = req.params;
+  const { userId } = req.user;
 
-  const task = await Task.findById(id).exec();
+  const task = await Task.findById(taskId).exec();
 
   if (!task) throw new HttpError(404, 'Task not found');
 
@@ -167,7 +163,7 @@ const makeOffer = async (req, res) => {
   await User
     .findByIdAndUpdate(userId, {
       $push: {
-        offeredTasks: id
+        offeredTasks: taskId
       }
     })
     .exec();

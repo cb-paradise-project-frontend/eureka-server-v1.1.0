@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../middlewares/auth');
 
 const {
   saveProfile,
@@ -8,8 +9,9 @@ const {
 
 const router = express.Router();
 
-router.get('/', getAllProfile);
-router.get('/:id', getProfileByUserId);
-router.put('/', saveProfile);
+router.get('/all', getAllProfile); // for testing only
+router.get('/', auth, getProfileByUserId);
+
+router.put('/', auth, saveProfile);
 
 module.exports = router;
