@@ -11,7 +11,6 @@ const auth = async ( req, res, next ) => {
   try {
     const decoded = await verifyJWT(token);
     req.user = decoded.user;
-    // console.log(req.user, decoded.user);
     next();
     return;
   } catch (error) {
