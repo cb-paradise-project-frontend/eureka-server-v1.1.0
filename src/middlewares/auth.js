@@ -10,8 +10,7 @@ const auth = async ( req, res, next ) => {
 
   try {
     const decoded = await verifyJWT(token);
-    req.user = decoded.user; //为什么不放在req.body
-    console.log(req.user, decoded.user);
+    req.user = decoded.user;
     next();
     return;
   } catch (error) {
