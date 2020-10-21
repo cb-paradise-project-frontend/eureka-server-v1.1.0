@@ -5,7 +5,7 @@ const auth = async ( req, res, next ) => {
   const token = req.header('X-Auth-Token');
 
   if (!token) {
-    return res.status(401).json('No tohen, authorization denied');
+    return res.status(401).json('No token, authorization denied');
   }
 
   try {
@@ -23,3 +23,4 @@ const auth = async ( req, res, next ) => {
 };
 
 module.exports = auth;
+
