@@ -87,7 +87,6 @@ const getTaskById = async (req, res) => {
   return sendResult(res, task);
 };
 
-
 const addTask = async (req, res) => {
   const { userId } = req.user;
 
@@ -112,8 +111,9 @@ const addTask = async (req, res) => {
   return sendResult(res, task);
 };
 
+const updateTask = async (req, res) => {
 
-const updateTask = (req, res) => {};
+};
 
 const addComment = async (req, res) => {
   const { id: taskId } = req.params;

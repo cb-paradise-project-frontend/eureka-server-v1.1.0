@@ -75,6 +75,16 @@ const schema = new mongoose.Schema({
     // },
     required: true,
   },
+  category: {
+    type: String,
+    // validate: {
+    //   validator: (status) => {
+    //     return !Joi.string().uppercase().valid(...['CLEAN', 'PICKUP', 'REMOVAL']).validate(status).error
+    //   },
+    //   msg: "Invalid task category"
+    // },
+    required: false,
+  },
   //TODO: user table validate(userID)
   offers: [{
     offeredBy: {

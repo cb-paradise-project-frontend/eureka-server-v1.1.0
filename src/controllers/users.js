@@ -19,7 +19,7 @@ const getUserById = async (req, res) => {
   if (!user) {
     return res.status(400).json('User not found');
   }
-  return res.json(user);
+  return res.json(user.postedTasks);
 };
 
 
