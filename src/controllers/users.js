@@ -2,7 +2,8 @@ const User = require('./../models/User');
 const { encryptPassword, comparePassword } = require('../utils/password');
 const { signJWT } = require('../utils/jwt');
 const { signUpSchema, logInSchema } = require('../utils/validator');
-
+const { HttpError } = require('../utils/HttpError');
+const { findById } = require('./../models/User');
 
 const getUsers = async (req, res) => {
   const users = await User.find().exec();
@@ -102,4 +103,32 @@ const updateUser = async (req, res) => {
   return res.json(updatedUser);
 };
 
-module.exports = { getUsers, getUserById, signUp, logIn, updateUser };
+const updateUserName = async (req, res) => {
+  const { firstName, lastName, userId } = req.body;
+
+  const user = await User.findById(userId).exec();
+
+  if (!user) {
+    throw new HttpError(400, 'user not found');
+  }
+
+  user = { ...user, firstName, lastName };
+  const updatedUserName = await user.save();
+
+  if (!updatedUserName) {
+    throw new HttpError('406', 'update user name faild');
+  }
+  const { email } = user;
+
+  const token =  await signJWT({ userId, firstName, lastName, email });
+  return res.status(204).header('X-Auth-Token', token).json(updateUserName);
+}
+
+module.exports = { 
+  getUsers,
+  getUserById,
+  signUp,
+  logIn,
+  updateUser,
+  updateUserName,
+};
