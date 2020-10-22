@@ -34,7 +34,22 @@ const schema = new mongoose.Schema({
     ref: 'Profile',
     required: false,
   }
-});
+},
+{
+  toJSON: {
+    getters: true,
+    virtuals: true
+  },
+  timestamps: true,
+}
+);
+
+schema
+  .virtual('fullName')
+  .get(function() { 
+    console.log(this);
+    return `${this.firstName} ${this.lastName}`; 
+  });
 
 const Model = mongoose.model('User', schema);
 
