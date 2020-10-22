@@ -1,7 +1,9 @@
 require('express-async-errors');
+const { decode } = require('jsonwebtoken');
 const { signJWT, verifyJWT } = require('./../utils/jwt');
 
 const auth = async ( req, res, next ) => {
+  console.log(123);
   const token = req.header('X-Auth-Token');
 
   if (!token) {

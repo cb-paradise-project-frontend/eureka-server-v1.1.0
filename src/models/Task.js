@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
     type: String, //Open, assigned, expired, completed
     // validate: {
     //   validator: (status) => {
-    //     return !Joi.string().uppercase().valid(...['OPEN', 'ASSIGNED', 'EXPIRED', 'COMPLETED']).validate(status).error
+    //     return !Joi.string().uppercase().valid(...['OPEN', 'ASSIGNED', 'COMPLETED']).validate(status).error
     //   },
     //   msg: "Invalid task status"
     // },
@@ -74,6 +74,16 @@ const schema = new mongoose.Schema({
     //     msg: "Please enter at least 25 characters and a maximum of 1000"
     // },
     required: true,
+  },
+  category: {
+    type: String,
+    // validate: {
+    //   validator: (status) => {
+    //     return !Joi.string().uppercase().valid(...['CLEAN', 'PICKUP', 'REMOVAL']).validate(status).error
+    //   },
+    //   msg: "Invalid task category"
+    // },
+    required: false,
   },
   //TODO: user table validate(userID)
   offers: [{
