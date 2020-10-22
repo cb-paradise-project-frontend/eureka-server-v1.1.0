@@ -46,8 +46,7 @@ const schema = new mongoose.Schema({
 
 schema
   .virtual('fullName')
-  .get(function() { 
-    console.log(this);
+  .get(function() {
     return `${this.firstName} ${this.lastName}`; 
   });
 
