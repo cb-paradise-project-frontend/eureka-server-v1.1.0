@@ -56,7 +56,7 @@ const getAllTasks = async (req, res) => {
     })
     .exec();
 
-  if (!tasks.length) throw new HttpError(404, 'Tasks not found');
+  if (!tasks || !tasks.length) throw new HttpError(404, 'Tasks not found');
 
   return sendResult(res, tasks);
 };
