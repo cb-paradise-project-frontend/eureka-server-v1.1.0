@@ -118,8 +118,6 @@ const updateUserName = async (req, res) => {
 
   const updatedUserName = await user.save();
 
-  console.log(123, updatedUserName);
-
   if (!updatedUserName) {
     throw new HttpError('406', 'update user name faild');
   }
