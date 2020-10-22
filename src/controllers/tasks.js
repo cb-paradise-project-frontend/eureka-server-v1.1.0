@@ -5,6 +5,8 @@ const HttpError = require('../utils/HttpError');
 const { sendResult } = require('../utils/sendResponse');
 const toObjectId = require('../utils/toObjectId');
 
+const SELECT_USER_FIELD = 'firstName lastName';
+
 const getAllTasks = async (req, res) => {
   const MIN_PAGE_SIZE = 1;
   const DEFAULT_PAGE = 1;
@@ -39,19 +41,19 @@ const getAllTasks = async (req, res) => {
     .lte(maxPrice)
     .limit(limit)
     .skip(skip)
-    .populate('postedBy', 'name')
+    .populate('postedBy', SELECT_USER_FIELD)
     .populate({ 
       path: 'offers',
       populate: {
         path: "offeredBy",
-        select: 'name _id'
+        select: SELECT_USER_FIELD
       }
     })
     .populate({ 
       path: 'comments',
       populate: {
         path: "askedBy",
-        select: 'name _id'
+        select: SELECT_USER_FIELD
       }
     })
     .exec();
@@ -71,14 +73,14 @@ const getTaskById = async (req, res) => {
       path: 'offers',
       populate: {
         path: "offeredBy",
-        select: 'name _id'
+        select: SELECT_USER_FIELD
       }
     })
     .populate({ 
       path: 'comments',
       populate: {
         path: "askedBy",
-        select: 'name _id'
+        select: SELECT_USER_FIELD
       }
     })
     .exec();
@@ -100,14 +102,14 @@ const getTaskByUserId = async (req, res) => {
       path: 'offers',
       populate: {
         path: "offeredBy",
-        select: 'name _id'
+        select: SELECT_USER_FIELD
       }
     })
     .populate({ 
       path: 'comments',
       populate: {
         path: "askedBy",
-        select: 'name _id'
+        select: SELECT_USER_FIELD
       }
     })
     .exec();
