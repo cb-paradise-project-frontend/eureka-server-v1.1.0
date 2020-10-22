@@ -1,3 +1,4 @@
+const { object } = require('joi');
 const Task = require('../models/Task');
 const User = require('../models/User');
 const HttpError = require('../utils/HttpError');
@@ -66,6 +67,35 @@ const getTaskById = async (req, res) => {
 
   const task = await Task.findById(toObjectId(id))
     .populate('postedBy')
+    .populate({ 
+      path: 'offers',
+      populate: {
+        path: "offeredBy",
+        select: 'name _id'
+      }
+    })
+    .populate({ 
+      path: 'comments',
+      populate: {
+        path: "askedBy",
+        select: 'name _id'
+      }
+    })
+    .exec();
+
+  if (!task) throw new HttpError(404, 'Task not found.');
+
+  return sendResult(res, task);
+};
+
+const getTaskByCategory = async (req, res) => {
+  
+}
+
+const getTaskByUserId = async (req, res) => {
+  const { userId } = req.user; 
+
+  const task = await Task.find({postedBy: toObjectId(userId)})
     .populate({ 
       path: 'offers',
       populate: {
@@ -195,6 +225,7 @@ const deleteTask = async (req, res) => {
 module.exports = {
   getAllTasks,
   getTaskById,
+  getTaskByUserId,
   addTask,
   updateTask,
   addComment,

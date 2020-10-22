@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
     type: String, //Open, assigned, expired, completed
     // validate: {
     //   validator: (status) => {
-    //     return !Joi.string().uppercase().valid(...['OPEN', 'ASSIGNED', 'EXPIRED', 'COMPLETED']).validate(status).error
+    //     return !Joi.string().uppercase().valid(...['OPEN', 'ASSIGNED', 'COMPLETED']).validate(status).error
     //   },
     //   msg: "Invalid task status"
     // },

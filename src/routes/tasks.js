@@ -4,6 +4,7 @@ const auth = require('../middlewares/auth');
 
 const {
   getAllTasks,
+  getTaskByUserId,
   getTaskById,
   addTask,
   updateTask,
@@ -15,7 +16,9 @@ const {
 const router = express.Router();
 
 router.get('/', getAllTasks);
-router.get('/:id', getTaskById);
+router.get('/private', auth , getTaskByUserId);
+
+router.get('/:id', getTaskById); //using for test
 
 router.post('/', auth, addTask);
 
