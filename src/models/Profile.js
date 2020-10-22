@@ -6,16 +6,21 @@ const schema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  accountHolder: {
-    type: String,
-    required: true,
-  },
-  accountNumber: {
-    type: Number,
-    required: true,
-  },
-  bsb: {
-    type: Number,
+  bankAccount: {
+    type:{
+      holder: {
+        type: String,
+        required: true,
+      },
+      accountNumber: {
+        type: Number,
+        required: true,
+      },
+      bsb: {
+        type: Number,
+        required: true,
+      },
+    },
     required: true,
   },
   billingAddress: {
