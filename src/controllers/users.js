@@ -2,7 +2,7 @@ const User = require('./../models/User');
 const { encryptPassword, comparePassword } = require('../utils/password');
 const { signJWT } = require('../utils/jwt');
 const { signUpSchema, logInSchema } = require('../utils/validator');
-const { HttpError } = require('../utils/HttpError');
+const HttpError = require('../utils/HttpError');
 const { findById } = require('./../models/User');
 
 const getUsers = async (req, res) => {
@@ -115,12 +115,12 @@ const updateUserName = async (req, res) => {
   Object.assign(user, {
     firstName,
     lastName,
-  }, {new: true})
+  }, { new: true })
 
   const updatedUserName = await user.save();
 
   if (!updatedUserName) {
-    throw new HttpError('406', 'update user name faild');
+    throw new HttpError(406, 'update user name faild');
   }
   const { email } = user;
 
@@ -131,6 +131,34 @@ const updateUserName = async (req, res) => {
   });
 }
 
+const resetPassword = async (req, res) => {
+  const { userId } = req.user;
+  const { currentPassword, newPassword } = req.body;
+
+  const user = await User.findById(userId).exec();
+  const passwordMatch = await comparePassword(currentPassword, user.password);
+
+  if (!passwordMatch) {
+    throw new HttpError('406', 'password not match');
+  }
+
+  const newEncryptedPassword = await encryptPassword(newPassword);
+  // const updatedUser = await user.updateOne({
+  //   password: newEncryptedPassword,
+  // }, {new: true});
+  //以上方法不支持使用 new: true，所以我打算用commonJS原生写法保存
+  Object.assign(user, {
+    password: newEncryptedPassword,
+  }, { new: true });
+  
+  const updatedUser = await user.save();
+
+  if (!updatedUser) {
+    throw new HttpError(406, 'could not reset password')
+  }
+  res.status(202).json(updatedUser);
+}
+
 module.exports = { 
   getUsers,
   getUserById,
@@ -138,4 +166,5 @@ module.exports = {
   logIn,
   updateUser,
   updateUserName,
+  resetPassword,
 };
