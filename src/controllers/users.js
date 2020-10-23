@@ -104,7 +104,8 @@ const updateUser = async (req, res) => {
 };
 
 const updateUserName = async (req, res) => {
-  const { firstName, lastName, userId } = req.body;
+  const { userId } = req.user;
+  const { firstName, lastName } = req.body;
   let user = await User.findById(userId).exec();
 
   if (!user) {
@@ -125,7 +126,7 @@ const updateUserName = async (req, res) => {
 
   const token =  await signJWT({ userId, firstName, lastName, email });
   return res.status(202).header('X-Auth-Token', token).json({
-    firstname: updatedUserName.firstName,
+    firstName: updatedUserName.firstName,
     lastName: updatedUserName.lastName,
   });
 }
