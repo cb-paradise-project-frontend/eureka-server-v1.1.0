@@ -10,8 +10,9 @@ const signUpSchema = Joi.object({
             .lowercase()
             .required(),
   password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+            .pattern(/^(?=.*[A-Z])(?=.*[\W])(?=.*[0-9])(?=.*[a-z]).{8,16}$/)
             .required(),
+  confirmPassword: Joi.ref('password'),
 });
 
 const logInSchema = Joi.object({
