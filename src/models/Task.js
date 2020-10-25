@@ -83,7 +83,7 @@ const schema = new mongoose.Schema({
     //   },
     //   msg: "Invalid task category"
     // },
-    required: false,
+    required: true,
   },
   //TODO: user table validate(userID)
   offers: [{
