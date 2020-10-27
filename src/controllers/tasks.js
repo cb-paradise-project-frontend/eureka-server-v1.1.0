@@ -240,7 +240,6 @@ const addComment = async (req, res) => {
 const makeOffer = async (req, res) => {
   const { id: taskId } = req.params;
   const { userId } = req.user;
-  const { message } = req.body;
 
   const task = await Task.findById(taskId).exec();
 
@@ -251,8 +250,8 @@ const makeOffer = async (req, res) => {
   };
 
   const newOffer = {
+    ...req.body,
     offeredBy: toObjectId(userId),
-    message,
   };
 
   task.offers.push(newOffer);

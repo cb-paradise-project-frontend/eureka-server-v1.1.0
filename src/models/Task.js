@@ -96,6 +96,10 @@ const schema = new mongoose.Schema({
       type: String,
       required: false,
     },
+    bid: {
+      type: Number,
+      required: true,
+    },
     required: false,
   },
   {
