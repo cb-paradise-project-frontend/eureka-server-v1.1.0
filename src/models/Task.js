@@ -83,7 +83,7 @@ const schema = new mongoose.Schema({
     //   },
     //   msg: "Invalid task category"
     // },
-    required: false,
+    required: true,
   },
   //TODO: user table validate(userID)
   offers: [{
@@ -95,6 +95,10 @@ const schema = new mongoose.Schema({
     message: {
       type: String,
       required: false,
+    },
+    bid: {
+      type: Number,
+      required: true,
     },
     required: false,
   },

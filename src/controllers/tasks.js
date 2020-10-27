@@ -250,6 +250,7 @@ const makeOffer = async (req, res) => {
   };
 
   const newOffer = {
+    ...req.body,
     offeredBy: toObjectId(userId),
   };
 

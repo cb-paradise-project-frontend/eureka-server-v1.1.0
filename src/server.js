@@ -24,7 +24,7 @@ connectToDB()
       console.log(`Server is listen on PORT: ${PORT}`);
     });
     // create task data for testing
-    // createTaskData(10);
+    // createTaskData(30);
   })
   .catch(e => {
     console.log('DB Connection Failed');
