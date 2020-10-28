@@ -4,22 +4,23 @@ const { signJWT } = require('../utils/jwt');
 const { signUpSchema, logInSchema } = require('../utils/validator');
 const HttpError = require('../utils/HttpError');
 const { findById } = require('./../models/User');
+const { sendResult, sendError } = require('../utils/sendResponse');
 
 const getUsers = async (req, res) => {
   const users = await User.find().exec();
   if (!users) {
-    return res.status(400).json('Users not found');
+    return sendError(res, 400, 'User not found');
   }
-  return res.json(users);
+  return sendResult(res, users);
 };
 
 const getUserById = async (req, res) => {
   const id = req.params.id;
   const user = await User.findById(id).exec();
   if (!user) {
-    return res.status(400).json('User not found');
+    return sendError(res, 400, 'User not found');
   }
-  return res.json(user);
+  return sendResult(res, user);
 };
 
 
@@ -37,7 +38,7 @@ const signUp = async (req, res) => {
 
   const existingUser = await User.findOne({email}).exec();
   if (existingUser) {
-    return res.json('User exists, please try another email');
+    return sendError(res, 409, 'User exists, please try another email');
   }
 
   const user = new User({ firstName, lastName, email, password });
@@ -46,7 +47,8 @@ const signUp = async (req, res) => {
 
   const userId = user.id;
   const token = await signJWT({ userId, firstName, lastName, email });
-  return res.set('X-Auth-Token', token).status(200).json({message: 'SignUp Succeed'})
+  res.set('X-Auth-Token', token);
+  return sendResult(res);
 };
 
 
@@ -63,19 +65,20 @@ const logIn = async(req, res) => {
   const { email, password } = result;
   const user = await User.findOne({email}).exec();
   if (!user) {
-    return res.json('Incorrect email or password');
+    return sendError(res, 401, 'Incorrect email or password');
   }
 
   const encryptedPassword = user.password;
   const isPasswordMatch = await comparePassword(password, encryptedPassword);
   if (!isPasswordMatch) {
-    return res.json('Incorrect email or password');
+    return sendError(res, 401, 'Incorrect email or password');
   }
 
   const userId = user.id;
   const { firstName, lastName } = user;
   const token = await signJWT({ userId, firstName, lastName, email });
-  return res.header('X-Auth-Token', token).json({message: 'LogIn Succeed'})
+  res.header('X-Auth-Token', token);
+  return sendResult(res);
 };
 
 // User private route demo
