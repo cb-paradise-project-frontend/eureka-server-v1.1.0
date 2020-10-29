@@ -17,17 +17,24 @@ const getAllTasks = async (req, res) => {
     keyword, 
     maxPrice = 9999,
     minPrice = 5,
+    category,
   } = req.query;
 
-  const filter = keyword &&
-    { $or: [
-      { 
-        title: { $regex: keyword, $options: '$i' } 
-      },
-      {
-        description: { $regex: keyword, $options: '$i' }
-      },
-    ]};
+  const filter = (category || keyword)
+    && { $and: [] };
+
+  if (category) {
+    filter.$and.push({ category });
+  };
+
+  if (keyword) {
+    filter.$and.push({
+      $or: [
+        { title: { $regex: keyword, $options: '$i' } },
+        { description: { $regex: keyword, $options: '$i' }},
+      ]
+    });
+  };
 
   const limit = Math.max(pageSize, MIN_PAGE_SIZE);
   const skip = (Math.max(page, DEFAULT_PAGE) - 1) * limit;
