@@ -30,8 +30,10 @@ function createDataArray(size, data=testData) {
   }
 
   dataArray[1].title = 'Wall repair';
-  dataArray[1].status = 'ASSIGNED';
-  dataArray[2].status = 'COMPLETED';
+  dataArray[2].category = 'PICKUP';
+  dataArray[3].category = 'REMOVAL';
+  dataArray[4].status = 'ASSIGNED';
+  dataArray[5].status = 'COMPLETED';
 
   return dataArray;
 }
