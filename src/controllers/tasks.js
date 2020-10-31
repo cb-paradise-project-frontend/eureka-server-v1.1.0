@@ -207,6 +207,7 @@ const assignTask = async (req, res) => {
   if(errorList) throw new HttpError(406, 'unacceptable');
 
   task.acceptedBy = toObjectId(assignUserId);
+  task.status = 'ASSIGNED';
 
   await User.findByIdAndUpdate(assignUserId, { 
     $push: {
@@ -214,7 +215,7 @@ const assignTask = async (req, res) => {
     }
   }, {new: true});
 
-  const updatedTask = await task.updateOne({status: 'ASSIGNED'});
+  const updatedTask = await task.save();
 
   return sendResult(res, updatedTask);
 };
