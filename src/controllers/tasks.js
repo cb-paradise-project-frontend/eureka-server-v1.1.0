@@ -123,7 +123,7 @@ const getTaskByCategory = async (req, res) => {
   return sendResult(res, task);
 }
 
-const getTaskByUserId = async (req, res) => {
+const getTaskByOwnerId = async (req, res) => {
   const { userId } = req.user; 
 
   const task = await Task.find({postedBy: toObjectId(userId)})
@@ -301,7 +301,7 @@ const deleteTask = async (req, res) => {
 module.exports = {
   getAllTasks,
   getTaskById,
-  getTaskByUserId,
+  getTaskByOwnerId,
   getTaskByCategory,
   addTask,
   assignTask,

@@ -4,7 +4,7 @@ const auth = require('../middlewares/auth');
 
 const {
   getAllTasks,
-  getTaskByUserId,
+  getTaskByOwnerId,
   getTaskByCategory,
   getTaskById,
   addTask,
@@ -19,7 +19,7 @@ const {
 const router = express.Router();
 
 router.get('/', getAllTasks);
-router.get('/private', auth , getTaskByUserId);
+router.get('/owner', auth , getTaskByOwnerId);
 router.get('/category/:category', getTaskByCategory);
 
 router.get('/:id', getTaskById); //using for test
