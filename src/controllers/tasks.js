@@ -148,6 +148,41 @@ const getTaskByOwnerId = async (req, res) => {
   return sendResult(res, task);
 };
 
+const getTaskByOffererId = async (req, res) => {
+  const { userId } = req.user; 
+
+  const user = await User.findById(userId).exec();
+
+  if (!user) throw new HttpError(404, 'User not found.');
+
+  const { offeredTasks } = user;
+
+  const task = await Task
+    .find({
+      _id: {
+        $in: offeredTasks.map((taskId) => toObjectId(taskId)),
+    }})
+    .populate({ 
+      path: 'offers',
+      populate: {
+        path: "offeredBy",
+        select: SELECT_USER_FIELD
+      }
+    })
+    .populate({ 
+      path: 'comments',
+      populate: {
+        path: "askedBy",
+        select: SELECT_USER_FIELD
+      }
+    })
+    .exec();
+
+  if (!task.length) throw new HttpError(404, 'Task not found.');
+
+  return sendResult(res, task);
+};
+
 const addTask = async (req, res) => {
   const { userId } = req.user;
 
@@ -302,6 +337,7 @@ module.exports = {
   getAllTasks,
   getTaskById,
   getTaskByOwnerId,
+  getTaskByOffererId,
   getTaskByCategory,
   addTask,
   assignTask,
