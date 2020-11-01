@@ -8,7 +8,7 @@ const testData = {
   budget: '120',
   postedBy: "5f8cfb86e184c46a6c021d82",
   location: 'Kurunjang VIC 3337, Australia',
-  category: 'CLEAN',
+  category: 'Clean',
   dueDate: "Wed Sep 30 2020 21:34:17 GMT+1000 (Australian Eastern Standard Time)",
   description: `-remove existing bamboo fence - supply and install new fence (open for ideas)
   - install synthetic turf
@@ -30,8 +30,8 @@ function createDataArray(size, data=testData) {
   }
 
   dataArray[1].title = 'Wall repair';
-  dataArray[2].category = 'PICKUP';
-  dataArray[3].category = 'REMOVAL';
+  dataArray[2].category = 'Pickup';
+  dataArray[3].category = 'Removal';
   dataArray[4].status = 'ASSIGNED';
   dataArray[5].status = 'COMPLETED';
 
