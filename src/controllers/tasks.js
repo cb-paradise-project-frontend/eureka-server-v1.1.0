@@ -123,7 +123,7 @@ const getTaskByCategory = async (req, res) => {
   return sendResult(res, task);
 }
 
-const getTaskByUserId = async (req, res) => {
+const getTaskByOwnerId = async (req, res) => {
   const { userId } = req.user; 
 
   const task = await Task.find({postedBy: toObjectId(userId)})
@@ -144,6 +144,41 @@ const getTaskByUserId = async (req, res) => {
     .exec();
 
   if (!task) throw new HttpError(404, 'Task not found.');
+
+  return sendResult(res, task);
+};
+
+const getTaskByOffererId = async (req, res) => {
+  const { userId } = req.user; 
+
+  const user = await User.findById(userId).exec();
+
+  if (!user) throw new HttpError(404, 'User not found.');
+
+  const { offeredTasks } = user;
+
+  const task = await Task
+    .find({
+      _id: {
+        $in: offeredTasks.map((taskId) => toObjectId(taskId)),
+    }})
+    .populate({ 
+      path: 'offers',
+      populate: {
+        path: "offeredBy",
+        select: SELECT_USER_FIELD
+      }
+    })
+    .populate({ 
+      path: 'comments',
+      populate: {
+        path: "askedBy",
+        select: SELECT_USER_FIELD
+      }
+    })
+    .exec();
+
+  if (!task.length) throw new HttpError(404, 'Task not found.');
 
   return sendResult(res, task);
 };
@@ -207,6 +242,7 @@ const assignTask = async (req, res) => {
   if(errorList) throw new HttpError(406, 'unacceptable');
 
   task.acceptedBy = toObjectId(assignUserId);
+  task.status = 'ASSIGNED';
 
   await User.findByIdAndUpdate(assignUserId, { 
     $push: {
@@ -214,7 +250,7 @@ const assignTask = async (req, res) => {
     }
   }, {new: true});
 
-  const updatedTask = await task.updateOne({status: 'ASSIGNED'});
+  const updatedTask = await task.save();
 
   return sendResult(res, updatedTask);
 };
@@ -300,7 +336,8 @@ const deleteTask = async (req, res) => {
 module.exports = {
   getAllTasks,
   getTaskById,
-  getTaskByUserId,
+  getTaskByOwnerId,
+  getTaskByOffererId,
   getTaskByCategory,
   addTask,
   assignTask,
