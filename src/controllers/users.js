@@ -4,6 +4,7 @@ const { signJWT } = require('../utils/jwt');
 const { signUpSchema, logInSchema } = require('../utils/validator');
 const HttpError = require('../utils/HttpError');
 const { findById } = require('./../models/User');
+const { sendResult } = require('../utils/sendResponse');
 
 const getUsers = async (req, res) => {
   const users = await User.find().exec();
@@ -159,6 +160,17 @@ const resetPassword = async (req, res) => {
   res.status(202).json(updatedUser);
 }
 
+const sendResetLink = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne(req.body).exec();
+  console.log(user);
+  if (!user) {
+    throw new HttpError(404, 'email not found');
+  }
+
+  res.status(200).json(`${email} received`);
+}
+
 module.exports = { 
   getUsers,
   getUserById,
@@ -167,4 +179,5 @@ module.exports = {
   updateUser,
   updateUserName,
   resetPassword,
+  sendResetLink,
 };
