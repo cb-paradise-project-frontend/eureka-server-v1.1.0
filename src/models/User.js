@@ -17,6 +17,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  token: {
+    type: String,
+    required: false,
+  },
   postedTasks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
