@@ -1,9 +1,11 @@
 const User = require('./../models/User');
 const { encryptPassword, comparePassword } = require('../utils/password');
-const { signJWT } = require('../utils/jwt');
+const { signJWT, signForgotPasswordToken, verifyJWT } = require('../utils/jwt');
 const { signUpSchema, logInSchema } = require('../utils/validator');
 const HttpError = require('../utils/HttpError');
 const { findById } = require('./../models/User');
+const { sendResult } = require('../utils/sendResponse');
+const { SESSendEmail } = require('../utils/AWS_SES');
 
 const getUsers = async (req, res) => {
   const users = await User.find().exec();
@@ -159,6 +161,45 @@ const resetPassword = async (req, res) => {
   res.status(202).json(updatedUser);
 }
 
+const sendResetLink = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne(req.body).exec();
+
+  if (!user) {
+    throw new HttpError(404, 'email not found');
+  }
+
+  const newToken = await signForgotPasswordToken(email);
+
+  const updatedTokn = await user.updateOne({
+    token: newToken,
+  }, { new: true });
+
+  SESSendEmail(email, newToken);
+  res.status(200).json(`${email} received`);
+}
+
+const resetPasswordFromLink = async (req, res) => {
+  const { password, token } = req.body;
+
+  const { email } = await verifyJWT(token);
+  const user = await User.findOne({email: email}).exec();
+
+  if (user.token !== token) throw new HttpError(406, 'token not match or be modified');
+
+  const newEncryptedPassword = await encryptPassword(password);
+
+  Object.assign(user, {
+    password: newEncryptedPassword,
+    token: null,
+  }, { new: true });
+  
+  const updatedUser = await user.save();
+  if (updatedUser) {
+    return res.status(200).json('password changed succeeded');
+  };
+}
+
 module.exports = { 
   getUsers,
   getUserById,
@@ -167,4 +208,6 @@ module.exports = {
   updateUser,
   updateUserName,
   resetPassword,
+  sendResetLink,
+  resetPasswordFromLink,
 };
