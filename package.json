@@ -4,7 +4,12 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon main"
+    "dev": "nodemon main",
+    "start": "node src/server.js",
+    "production-start": "pm2 start src/server.js",
+    "production-monit": "pm2 monit",
+    "production-stop": "pm2 stop 'all'",
+    "production-delete": "pm2 delete 'all'"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +23,8 @@
     "joi": "^17.2.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.6",
-    "node-ses": "^3.0.3"
+    "node-ses": "^3.0.3",
+    "pm2": "^4.5.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

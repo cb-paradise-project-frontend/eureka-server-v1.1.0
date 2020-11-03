@@ -28,6 +28,9 @@ const SESSendEmail = (emailAddress, token) => {
     message: `<p>follow link will expired in 20 minutes: ${content}</p>`,
     altText: `follow link will expired in 20 minutes:${content}`
   }, (err, data, res) => {
+    console.error('SES-Error', err);
+    console.log('SES-SendSucceeded', data);
+    console.log('response from SES', res);
   })
 };
 // sendEmail('wenpeiwaynezhang@gmail.com', 'bscusnfagaelrucg');
