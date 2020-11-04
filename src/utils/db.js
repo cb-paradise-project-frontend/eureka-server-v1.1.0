@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 
 exports.connectToDB = () => {
   const { DB_HOST, DB_PORT, DB_DATABASE, DB_ATLAS } = process.env;
-  const connectionString = `${DB_ATLAS}`;
+
+  // online database
+  // const connectionString = `${DB_ATLAS}`;
+
+  // local database
+  const connectionString = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
 
   const db = mongoose.connection;
   db.on('connected', () => {
