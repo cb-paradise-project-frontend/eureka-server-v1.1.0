@@ -17,6 +17,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  avatarId: {
+    type: Number,
+    required: false,
+  },
   token: {
     type: String,
     required: false,
