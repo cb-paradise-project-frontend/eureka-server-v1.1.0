@@ -75,8 +75,9 @@ const logIn = async(req, res) => {
   }
 
   const userId = user.id;
-  const { firstName, lastName } = user;
-  const token = await signJWT({ userId, firstName, lastName, email });
+  const { firstName, lastName, avatarId } = user;
+
+  const token = await signJWT({ userId, firstName, lastName, email, avatarId });
   return res.header('X-Auth-Token', token).json({message: 'LogIn Succeed'})
 };
 
