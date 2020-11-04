@@ -33,6 +33,8 @@ const getProfileByUserId = async (req, res) => {
   const { userId } = req.user;
 
   const profile = await Profile.find({ user: userId }).exec();
+  const user = await User.findById(userId).exec();
+  console.log(999, user);
 
   if (!profile) throw new HttpError(404, 'Profile not found');
 
@@ -49,8 +51,17 @@ const getAllProfile = async (req, res) => {
   return sendResult(res, profiles);
 };
 
+const getAvatarByUserId = async (req, res) => {
+  const { userId } = req.user;
+
+  const user = await User.findById(userId).exec();
+
+  return res.status(200).json(user);
+}
+
 module.exports = {
   saveProfile,
   getAllProfile,
   getProfileByUserId,
+  getAvatarByUserId,
 };

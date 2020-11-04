@@ -11,6 +11,7 @@ const {
   resetPassword, 
   sendResetLink,
   resetPasswordFromLink,
+  updateAvatar,
 } = require('./../controllers/users');
 
 const router = express.Router();
@@ -22,6 +23,7 @@ router.get('/:id', getUserById);
 router.post('/forgot-password', sendResetLink);
 router.put('/reset-password', resetPasswordFromLink);
 router.put('/name', auth, updateUserName);
+router.put('/avatar', auth, updateAvatar);
 router.put('/password', auth, resetPassword);
 router.put('/:id', auth, updateUser);
 
