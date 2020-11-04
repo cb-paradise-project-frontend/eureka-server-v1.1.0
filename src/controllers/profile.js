@@ -33,8 +33,6 @@ const getProfileByUserId = async (req, res) => {
   const { userId } = req.user;
 
   const profile = await Profile.find({ user: userId }).exec();
-  const user = await User.findById(userId).exec();
-  console.log(999, user);
 
   if (!profile) throw new HttpError(404, 'Profile not found');
 

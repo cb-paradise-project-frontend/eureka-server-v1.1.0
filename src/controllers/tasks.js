@@ -5,7 +5,7 @@ const HttpError = require('../utils/HttpError');
 const { sendResult } = require('../utils/sendResponse');
 const toObjectId = require('../utils/toObjectId');
 
-const SELECT_USER_FIELD = 'firstName lastName';
+const SELECT_USER_FIELD = 'firstName lastName avatarId email';
 
 const getAllTasks = async (req, res) => {
   const MIN_PAGE_SIZE = 1;
