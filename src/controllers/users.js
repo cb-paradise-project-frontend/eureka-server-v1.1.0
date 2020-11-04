@@ -131,7 +131,7 @@ const updateUserName = async (req, res) => {
     firstName: updatedUserName.firstName,
     lastName: updatedUserName.lastName,
   });
-}
+};
 
 const resetPassword = async (req, res) => {
   const { userId } = req.user;
@@ -159,7 +159,7 @@ const resetPassword = async (req, res) => {
     throw new HttpError(406, 'could not reset password')
   }
   res.status(202).json(updatedUser);
-}
+};
 
 const sendResetLink = async (req, res) => {
   const { email } = req.body;
@@ -177,7 +177,7 @@ const sendResetLink = async (req, res) => {
 
   SESSendEmail(email, newToken);
   res.status(200).json(`${email} received`);
-}
+};
 
 const resetPasswordFromLink = async (req, res) => {
   const { password, token } = req.body;
@@ -198,7 +198,28 @@ const resetPasswordFromLink = async (req, res) => {
   if (updatedUser) {
     return res.status(200).json('password changed succeeded');
   };
-}
+};
+
+const updateAvatar = async (req, res) => {
+  const { userId } = req.user;
+  const { avatarId } = req.body;
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { avatarId },
+    { new: true },
+  ).exec();
+
+  if (!updatedUser) {
+    throw new HttpError(404, 'change avatar failed');
+  }
+
+  return res.status(200).json(updatedUser);
+};
+
+// const getAvatar = async (req, res) => {
+//   const { userId } = req.user;
+//   console.log(userId, 999);
+// }
 
 module.exports = { 
   getUsers,
@@ -210,4 +231,5 @@ module.exports = {
   resetPassword,
   sendResetLink,
   resetPasswordFromLink,
+  updateAvatar,
 };
