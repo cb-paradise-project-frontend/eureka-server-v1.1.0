@@ -17,6 +17,14 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  avatarId: {
+    type: Number,
+    required: false,
+  },
+  token: {
+    type: String,
+    required: false,
+  },
   postedTasks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',

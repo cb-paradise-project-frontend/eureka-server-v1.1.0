@@ -14,9 +14,22 @@ const signJWT = async (user) => {
   }
 }
 
+const signForgotPasswordToken = async (email) => {
+  const payload = {
+    email,
+  };
+  
+  try {
+    const token = await jwt.sign(payload, jwtSecret, {expiresIn: '20m'});
+    return token;
+  } catch(err) {
+    throw err;
+  }
+}
+
 const verifyJWT = async (token) => {
   const decoded = await jwt.verify(token, jwtSecret);
   return decoded;
 }
 
-module.exports = { signJWT, verifyJWT };
+module.exports = { signJWT, signForgotPasswordToken, verifyJWT };

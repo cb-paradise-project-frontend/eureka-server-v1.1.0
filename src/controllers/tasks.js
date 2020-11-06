@@ -5,7 +5,7 @@ const HttpError = require('../utils/HttpError');
 const { sendResult } = require('../utils/sendResponse');
 const toObjectId = require('../utils/toObjectId');
 
-const SELECT_USER_FIELD = 'firstName lastName';
+const SELECT_USER_FIELD = 'firstName lastName avatarId email';
 
 const getAllTasks = async (req, res) => {
   const MIN_PAGE_SIZE = 1;
@@ -17,17 +17,24 @@ const getAllTasks = async (req, res) => {
     keyword, 
     maxPrice = 9999,
     minPrice = 5,
+    category,
   } = req.query;
 
-  const filter = keyword &&
-    { $or: [
-      { 
-        title: { $regex: keyword, $options: '$i' } 
-      },
-      {
-        description: { $regex: keyword, $options: '$i' }
-      },
-    ]};
+  const filter = (category || keyword)
+    && { $and: [] };
+
+  if (category) {
+    filter.$and.push({ category });
+  };
+
+  if (keyword) {
+    filter.$and.push({
+      $or: [
+        { title: { $regex: keyword, $options: '$i' } },
+        { description: { $regex: keyword, $options: '$i' }},
+      ]
+    });
+  };
 
   const limit = Math.max(pageSize, MIN_PAGE_SIZE);
   const skip = (Math.max(page, DEFAULT_PAGE) - 1) * limit;
@@ -116,7 +123,7 @@ const getTaskByCategory = async (req, res) => {
   return sendResult(res, task);
 }
 
-const getTaskByUserId = async (req, res) => {
+const getTaskByOwnerId = async (req, res) => {
   const { userId } = req.user; 
 
   const task = await Task.find({postedBy: toObjectId(userId)})
@@ -137,6 +144,41 @@ const getTaskByUserId = async (req, res) => {
     .exec();
 
   if (!task) throw new HttpError(404, 'Task not found.');
+
+  return sendResult(res, task);
+};
+
+const getTaskByOffererId = async (req, res) => {
+  const { userId } = req.user; 
+
+  const user = await User.findById(userId).exec();
+
+  if (!user) throw new HttpError(404, 'User not found.');
+
+  const { offeredTasks } = user;
+
+  const task = await Task
+    .find({
+      _id: {
+        $in: offeredTasks.map((taskId) => toObjectId(taskId)),
+    }})
+    .populate({ 
+      path: 'offers',
+      populate: {
+        path: "offeredBy",
+        select: SELECT_USER_FIELD
+      }
+    })
+    .populate({ 
+      path: 'comments',
+      populate: {
+        path: "askedBy",
+        select: SELECT_USER_FIELD
+      }
+    })
+    .exec();
+
+  if (!task.length) throw new HttpError(404, 'Task not found.');
 
   return sendResult(res, task);
 };
@@ -200,6 +242,7 @@ const assignTask = async (req, res) => {
   if(errorList) throw new HttpError(406, 'unacceptable');
 
   task.acceptedBy = toObjectId(assignUserId);
+  task.status = 'ASSIGNED';
 
   await User.findByIdAndUpdate(assignUserId, { 
     $push: {
@@ -207,7 +250,7 @@ const assignTask = async (req, res) => {
     }
   }, {new: true});
 
-  const updatedTask = await task.updateOne({status: 'ASSIGNED'});
+  const updatedTask = await task.save();
 
   return sendResult(res, updatedTask);
 };
@@ -250,6 +293,7 @@ const makeOffer = async (req, res) => {
   };
 
   const newOffer = {
+    ...req.body,
     offeredBy: toObjectId(userId),
   };
 
@@ -292,7 +336,8 @@ const deleteTask = async (req, res) => {
 module.exports = {
   getAllTasks,
   getTaskById,
-  getTaskByUserId,
+  getTaskByOwnerId,
+  getTaskByOffererId,
   getTaskByCategory,
   addTask,
   assignTask,
