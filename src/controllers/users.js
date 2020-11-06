@@ -1,10 +1,11 @@
 const User = require('./../models/User');
 const { encryptPassword, comparePassword } = require('../utils/password');
-const { signJWT } = require('../utils/jwt');
+const { signJWT, signForgotPasswordToken, verifyJWT } = require('../utils/jwt');
 const { signUpSchema, logInSchema } = require('../utils/validator');
 const HttpError = require('../utils/HttpError');
 const { findById } = require('./../models/User');
 const { sendResult, sendError } = require('../utils/sendResponse');
+const { SESSendEmail } = require('../utils/AWS_SES');
 
 const getUsers = async (req, res) => {
   const users = await User.find().exec();
@@ -75,10 +76,9 @@ const logIn = async(req, res) => {
   }
 
   const userId = user.id;
-  const { firstName, lastName } = user;
-  const token = await signJWT({ userId, firstName, lastName, email });
-  res.header('X-Auth-Token', token);
-  return sendResult(res);
+  const { firstName, lastName, avatarId } = user;
+  const token = await signJWT({ userId, firstName, lastName, email, avatarId });
+  return res.header('X-Auth-Token', token).json({message: 'LogIn Succeed'})
 };
 
 // User private route demo
@@ -125,14 +125,13 @@ const updateUserName = async (req, res) => {
   if (!updatedUserName) {
     throw new HttpError(406, 'update user name faild');
   }
-  const { email } = user;
-
-  const token =  await signJWT({ userId, firstName, lastName, email });
+  const { email, avatarId } = user;
+  const token =  await signJWT({ userId, firstName, lastName, email, avatarId });
   return res.status(202).header('X-Auth-Token', token).json({
     firstName: updatedUserName.firstName,
     lastName: updatedUserName.lastName,
   });
-}
+};
 
 const resetPassword = async (req, res) => {
   const { userId } = req.user;
@@ -160,7 +159,67 @@ const resetPassword = async (req, res) => {
     throw new HttpError(406, 'could not reset password')
   }
   res.status(202).json(updatedUser);
-}
+};
+
+const sendResetLink = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne(req.body).exec();
+
+  if (!user) {
+    throw new HttpError(404, 'email not found');
+  }
+
+  const newToken = await signForgotPasswordToken(email);
+
+  const updatedTokn = await user.updateOne({
+    token: newToken,
+  }, { new: true });
+
+  SESSendEmail(email, newToken);
+  res.status(200).json(`${email} received`);
+};
+
+const resetPasswordFromLink = async (req, res) => {
+  const { password, token } = req.body;
+
+  const { email } = await verifyJWT(token);
+  const user = await User.findOne({email: email}).exec();
+
+  if (user.token !== token) throw new HttpError(406, 'token not match or be modified');
+
+  const newEncryptedPassword = await encryptPassword(password);
+
+  Object.assign(user, {
+    password: newEncryptedPassword,
+    token: null,
+  }, { new: true });
+  
+  const updatedUser = await user.save();
+  if (updatedUser) {
+    return res.status(200).json('password changed succeeded');
+  };
+};
+
+const updateAvatar = async (req, res) => {
+  const { userId } = req.user;
+  const { avatarId } = req.body;
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { avatarId },
+    { new: true },
+  ).exec();
+
+  if (!updatedUser) {
+    throw new HttpError(404, 'change avatar failed');
+  }
+
+  return res.status(200).json(updatedUser);
+};
+
+// const getAvatar = async (req, res) => {
+//   const { userId } = req.user;
+//   console.log(userId, 999);
+// }
 
 module.exports = { 
   getUsers,
@@ -170,4 +229,7 @@ module.exports = {
   updateUser,
   updateUserName,
   resetPassword,
+  sendResetLink,
+  resetPasswordFromLink,
+  updateAvatar,
 };
