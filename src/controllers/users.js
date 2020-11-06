@@ -125,9 +125,8 @@ const updateUserName = async (req, res) => {
   if (!updatedUserName) {
     throw new HttpError(406, 'update user name faild');
   }
-  const { email } = user;
-
-  const token =  await signJWT({ userId, firstName, lastName, email });
+  const { email, avatarId } = user;
+  const token =  await signJWT({ userId, firstName, lastName, email, avatarId });
   return res.status(202).header('X-Auth-Token', token).json({
     firstName: updatedUserName.firstName,
     lastName: updatedUserName.lastName,
