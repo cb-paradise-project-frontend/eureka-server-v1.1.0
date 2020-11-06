@@ -141,7 +141,7 @@ const resetPassword = async (req, res) => {
   const passwordMatch = await comparePassword(currentPassword, user.password);
 
   if (!passwordMatch) {
-    throw new HttpError('406', 'password not match');
+    return res.status(406).json('your current password is wrong');
   }
 
   const newEncryptedPassword = await encryptPassword(newPassword);
