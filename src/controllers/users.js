@@ -216,11 +216,6 @@ const updateAvatar = async (req, res) => {
   return res.status(200).json(updatedUser);
 };
 
-// const getAvatar = async (req, res) => {
-//   const { userId } = req.user;
-//   console.log(userId, 999);
-// }
-
 module.exports = { 
   getUsers,
   getUserById,
