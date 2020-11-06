@@ -1,6 +1,6 @@
 function sendResponse(res, code, message, data) {
   res.status(code).json({
-    status: code === 200 ? 'success' : 'error',
+    status: code === 200 ? 'success' : code,
     message,
     data
   });
