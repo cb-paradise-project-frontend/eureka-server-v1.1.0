@@ -1,12 +1,13 @@
 require('express-async-errors');
 const { decode } = require('jsonwebtoken');
 const { signJWT, verifyJWT } = require('./../utils/jwt');
+const { sendResult, sendError } = require('../utils/sendResponse');
 
 const auth = async ( req, res, next ) => {
   const token = req.header('X-Auth-Token');
 
   if (!token) {
-    return res.status(401).json('No token, authorization denied');
+    return sendError(res, 401, 'No token, access denied');
   }
 
   try {
@@ -17,7 +18,7 @@ const auth = async ( req, res, next ) => {
     next();
   } catch (error) {
     if (error.message == 'invalid token') {
-      return res.status(403).json('You are not authorized');
+      return sendError(res, 403, 'You are not authorized');
     } else
     throw error;
   };
