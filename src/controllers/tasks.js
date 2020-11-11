@@ -20,8 +20,9 @@ const getAllTasks = async (req, res) => {
     category,
   } = req.query;
 
-  const filter = (category || keyword)
-    && { $and: [] };
+  const filter = { $and: [{
+    status: 'OPEN',
+  }] };
 
   if (category) {
     filter.$and.push({ category });
